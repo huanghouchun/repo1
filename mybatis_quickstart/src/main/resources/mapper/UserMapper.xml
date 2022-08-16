@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="userMapper">
+    <!-- namespace：命名空间：与 id 属性共同构成唯一标识
+        定位到 select * from user sql 语句 : namespace.id: user.findAll
+
+        resultType: 返回结果类型（自动映射封装）：要封装的实体的全路径 实体类的属性字段要和数据库表属性名一致
+    -->
+    <!-- 写 sql 语句的时候 不要加 ;
+        id 并不具有唯一标识性 不同mapper 可以有相同id
+    -->
+    <!-- 查询所有 -->
+    <!-- com.lagou.domain.User 要想简写为 user 需要在 mybatis 核心配置文件中进行相关配置（配置别名 typeAlias）-->
+    <select id="findAll" resultType="uSEr">
+        select * from user
+    </select>
+
+    <!-- 新增用户 id自增 jdbc 中占位符是 ? mybatis中占位符是 #{} -->
+    <!-- #{}: mybatis 中的占位符，等同于 jdbc 中的 ? #{} 中的值要和传递过来的实体对象的属性名保持一致
+        执行#{}会按照参数名去实体类中找到响应的 get 方法自动调用拿到属性值
+        parameterType: 指定接收到的参数类型 -->
+    <!-- #{} 放的其实是 get 后首字母小写 -->
+    <insert id="saveUser" parameterType="com.lagou.domain.User">
+        insert into user(username, birthday, sex, address)
+        values (#{username}, #{birthday}, #{sex}, #{address})
+    </insert>
+
+    <!-- 更新用户 -->
+    <update id="updateUser" parameterType="com.lagou.domain.User">
+        update user set username = #{username}, birthday = #{birthday}, sex = #{sex}, address = #{address} where id = #{id}
+    </update>
+
+    <!-- 删除用户 -->
+    <!-- 传过来的参数像Integer、String且传过来的参数只有一个时 #{} 中可以随便写 -->
+    <!-- Sql语句中使用#{任意字符串}方式引用传递的单个参数 -->
+    <!-- java.lang.Integer 可以简写为 int -->
+    <delete id="deleteUser" parameterType="int">
+        delete from user where id = #{abc}
+    </delete>
+
+    <!--
+        int 其实就是 java.lang.Integer 的别名 这是 mybatis 早就以及起好了的
+
+        为了简化映射文件 Java 类型设置，mybatis框架为我们设置好的一些常用的类型的别名
+        string long int double boolean 等
+    -->
+</mapper>

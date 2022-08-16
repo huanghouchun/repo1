@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!-- 一定要按顺序配置
+        配置顺序：
+            configuration（配置）
+                properties（属性）
+                settings（设置）
+                typeAliases（类型别名）
+                typeHandlers（类型处理器）
+                objectFactory（对象工厂）
+                plugins（插件）
+                environments（环境配置）
+                    environment（环境变量）
+                        transactionManager（事务管理器）
+                        dataSource（数据源）
+                databaseIdProvider（数据库厂商标识）
+                mappers（映射器）
+    -->
+
+
+    <!-- 加载外部配置文件 -->
+    <!-- 加载 properties 文件 url 是获取一个完整的 url 路径  -->
+    <properties resource="jdbc.properties"></properties>
+
+
+    <!-- 设置别名 -->
+    <typeAliases>
+        <!-- type 想起别名的类的全路径 alias 别名 -->
+        <!-- 方式一：给单个实体起别名 -->
+        <!--<typeAlias type="com.lagou.domain.User" alias="user"/>-->
+
+        <!-- 方式二：批量起别名（常用）给某个包下所有的类都起上别名 别名就是类名，且不区分大小写 -->
+        <package name="com.lagou.domain"/>
+    </typeAliases>
+
+    <!-- environments: 配置运行环境 -->
+    <!-- default: 默认走下面的那个 environment 环境配置 -->
+    <environments default="development">
+        <!-- 开发中运行环境可以有多种情况，开发、运行、测试环境下都可以配置 不同环境下的配置是不一样的
+            当前只配置开发环境
+        -->
+        <environment id="development">
+            <!-- transactionManager：事务管理器
+                当前的事务管理器是JDBC 即当前事务交由JDBC管理
+            -->
+            <transactionManager type="JDBC"></transactionManager>
+            <!-- 数据源信息 POOLED: 使用 mybatis 的连接池  UNPOOLED: 不使用连接池，每一次获取的都是新的连接 -->
+            <dataSource type="POOLED">
+                <!-- 通过 ${} 动态获取 jdbc.properties 配置文件中的属性值 -->
+                <property name="driver" value="${jdbc.driver}"/>
+                <!-- 本地数据库 /// -->
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+
+    <!-- 映射关系配置的引入（引入映射配置文件的路径） 测试仅仅加载核心配置文件 -->
+    <mappers>
+        <!-- resources 映射配置文件路径 -->
+        <!-- 使用相对于类路径的资源引用 映射配置文件存在当前工程目录中 -->
+        <mapper resource="mapper/UserMapper.xml"></mapper>
+    </mappers>
+</configuration>
